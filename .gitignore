@@ -150,3 +150,14 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/git,java,maven,windows,eclipse
+
+.idea/
+projectName.iml
+/*.classpath
+/.classpath
+/.springBeans
+*.DS_Store
+*.iml
+/build
+/local.properties
+target/
