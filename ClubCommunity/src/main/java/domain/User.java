@@ -5,6 +5,10 @@ import java.sql.Timestamp;
 public class User {
     protected  Long id;
     protected  String account_id;
+    protected  String password;
+    protected  String nick_name;
+    protected Timestamp created_at;
+    protected Timestamp updated_at;
 
     public Long getId() {
         return id;
@@ -54,8 +58,4 @@ public class User {
         this.updated_at = updated_at;
     }
 
-    protected  String password;
-    protected  String nick_name;
-    protected Timestamp created_at;
-    protected Timestamp updated_at;
 }

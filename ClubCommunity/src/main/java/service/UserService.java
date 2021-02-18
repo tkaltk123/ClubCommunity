@@ -5,5 +5,6 @@ import domain.User;
 import java.util.List;
 
 public interface UserService {
-    List<User> getUsers();
+    boolean register(User user);
+    boolean login(User user);
 }
