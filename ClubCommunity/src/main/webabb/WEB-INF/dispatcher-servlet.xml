@@ -20,8 +20,8 @@
 
     <context:component-scan base-package="controller"/>
 
-    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
-    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars"/>
+    <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html" />
+    <mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**" />
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="WEB-INF/views/"/>
