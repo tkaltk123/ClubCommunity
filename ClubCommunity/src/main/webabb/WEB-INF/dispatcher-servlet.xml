@@ -19,6 +19,7 @@
     <mvc:annotation-driven/>
 
     <context:component-scan base-package="controller"/>
+    <context:component-scan base-package="swagger"/>
 
     <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html" />
     <mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**" />
