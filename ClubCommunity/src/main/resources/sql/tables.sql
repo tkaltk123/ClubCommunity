@@ -3,7 +3,7 @@ drop table if exists club_community.users;
 create table club_community.users(
     id              bigint      not null auto_increment unique primary key,
     account_id      varchar(16)	not null unique,
-    password        varchar(50)	not null,
+    password        varchar(100)not null,
     nick_name       varchar(12)	not null unique,
     created_at      timestamp   default now(),
     updated_at      timestamp   default now(),
