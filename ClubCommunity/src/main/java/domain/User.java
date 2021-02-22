@@ -1,14 +1,33 @@
 package domain;
 
+import com.sun.istack.internal.NotNull;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import java.sql.Timestamp;
 
 public class User {
     protected  Long id;
+    @NotEmpty
+    @Min(6)
+    @Max(16)
     protected  String account_id;
+    @NotEmpty
+    @Min(6)
+    @Max(16)
     protected  String password;
+    @NotEmpty
+    @Min(2)
+    @Max(12)
     protected  String nick_name;
     protected Timestamp created_at;
     protected Timestamp updated_at;
+    protected boolean deleted;
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public Long getId() {
         return id;
@@ -56,6 +75,10 @@ public class User {
 
     public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
 }
