@@ -13,7 +13,7 @@ drop table if exists club_community.clubs;
 create table club_community.clubs(
     id              bigint      not null auto_increment unique primary key,
     club_name       varchar(12)	not null unique,
-    explain         varchar(100),
+    introduce       varchar(100),
     member_num      int         default	0,
     created_at      timestamp   default now(),
     updated_at      timestamp   default now(),

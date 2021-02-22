@@ -13,4 +13,6 @@ public interface UserMapper {
     public User getUserByAccountId(String acid);
     public User getUserById(long id);
     public User getUserByNickName(String nick_name);
+    public void updateUser(User user);
+    public void softDeleteUser(User user);
 }
