@@ -2,24 +2,22 @@ package domain;
 
 import com.sun.istack.internal.NotNull;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.*;
 import java.sql.Timestamp;
 
 public class User {
     protected  Long id;
     @NotEmpty
-    @Min(6)
-    @Max(16)
+    @Size(min=6,max=16)
+    @Pattern(regexp = "[a-zA-Z0-9]+")
     protected  String account_id;
     @NotEmpty
-    @Min(6)
-    @Max(16)
+    @Size(min=6,max=16)
+    @Pattern(regexp = "[a-zA-Z0-9~!@#$%^&*()]+")
     protected  String password;
     @NotEmpty
-    @Min(2)
-    @Max(12)
+    @Size(min=2,max=12)
+    @Pattern(regexp = "[a-zA-Z0-9가-힣_]+")
     protected  String nick_name;
     protected Timestamp created_at;
     protected Timestamp updated_at;
