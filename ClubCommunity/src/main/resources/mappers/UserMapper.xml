@@ -21,10 +21,11 @@
     </select>
     <update id="updateUser">
         update users
-        set password = #{password},
+        set account_id = #{account_id},
+            password = #{password},
             nick_name = #{nick_name},
             updated_at = now()
-        where account_id = #{account_id}
+        where id = #{id}
     </update>
     <update id="softDeleteUser">
         update users
