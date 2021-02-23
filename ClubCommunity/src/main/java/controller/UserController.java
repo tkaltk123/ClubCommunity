@@ -22,7 +22,7 @@ public class UserController {
     UserService userService;
 
     @ResponseBody
-    @RequestMapping(value = "/join", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "", method = RequestMethod.POST, consumes = "application/json")
     @ApiOperation(value = "회원 가입", notes = "회원가입을 처리합니다.")
     public ResponseEntity<String> join(
             @ApiParam(value = "(required: account_id, password, nick_name)", required = true) @RequestBody @Valid User user) {
