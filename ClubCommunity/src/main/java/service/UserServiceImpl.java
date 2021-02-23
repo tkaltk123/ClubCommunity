@@ -51,13 +51,6 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("already logged out.");
         session.invalidate();
     }
-    //세션과 db에 저장된 정보를 비교해 유효성 검사
-    private boolean isWrongSession(User user){
-        HttpSession session = MyUtil.getSession();
-        Long userId = (Long)session.getAttribute("user-id");
-        //세션이 없거나 잘못된 계정 이거나 세션과 db의 id가 다를 경우
-        return userId == null || user == null || !userId.equals(user.getId());
-    }
     @Override
     public void updateUser(User user) {
         User userInfo = userMapper.getUserByAccountId(user.getAccount_id());
@@ -82,5 +75,12 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("is wrong password.");
         userMapper.softDeleteUser(user);
         logout();
+    }
+    //세션과 db에 저장된 정보를 비교해 유효성 검사
+    private boolean isWrongSession(User user){
+        HttpSession session = MyUtil.getSession();
+        Long userId = (Long)session.getAttribute("user-id");
+        //세션이 없거나 잘못된 계정 이거나 세션과 db의 id가 다를 경우
+        return userId == null || user == null || !userId.equals(user.getId());
     }
 }

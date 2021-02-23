@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import service.UserService;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
@@ -58,7 +57,7 @@ public class UserController {
     @RequestMapping(value = "", method = RequestMethod.DELETE, consumes = "application/json")
     @ApiOperation(value = "회원 탈퇴", notes = "사용자를 탈퇴시킵니다.")
     public ResponseEntity<String> withdrawal(
-            @ApiParam(value = "(required: account_id, password)", required = true) @RequestBody User user
+            @ApiParam(value = "(required: account_id, password)", required = true) @RequestBody @Valid User user
     ) {
         userService.withdrawal(user);
         return new ResponseEntity<>("withdrawal success",HttpStatus.OK);
