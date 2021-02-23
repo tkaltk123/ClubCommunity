@@ -26,10 +26,9 @@ public class UserController {
     @RequestMapping(value = "/join", method = RequestMethod.POST, consumes = "application/json")
     @ApiOperation(value = "회원 가입", notes = "회원가입을 처리합니다.")
     public ResponseEntity<String> join(
-            @ApiParam(value = "(required: account_id, password, nick_name)", required = true) @RequestBody  User user) {
-        return userService.register(user)?
-                new ResponseEntity<>("회원가입 성공",HttpStatus.OK):
-                new ResponseEntity<>("회원가입 실패",HttpStatus.INTERNAL_SERVER_ERROR);
+            @ApiParam(value = "(required: account_id, password, nick_name)", required = true) @RequestBody @Valid User user) {
+        userService.register(user);
+        return new ResponseEntity<>("join success",HttpStatus.OK);
     }
 
     @ResponseBody
@@ -37,26 +36,23 @@ public class UserController {
     @ApiOperation(value = "로그인", notes = "로그인을 처리합니다.")
     public ResponseEntity<String> login(
             @ApiParam(value = "(required: account_id, password)", required = true) @RequestBody User user) {
-        return userService.login(user)?
-                new ResponseEntity<>("로그인 성공",HttpStatus.OK):
-                new ResponseEntity<>("로그인 실패",HttpStatus.INTERNAL_SERVER_ERROR);
+        userService.login(user);
+        return new ResponseEntity<>("login success",HttpStatus.OK);
     }
     @ResponseBody
     @RequestMapping(value = "/logout", method = RequestMethod.POST, consumes = "application/json")
     @ApiOperation(value = "로그아웃", notes = "사용자를 로그아웃 시킵니다.")
     public ResponseEntity<String> logout() {
-        return userService.logout()?
-                new ResponseEntity<>("로그아웃 되었습니다.",HttpStatus.OK):
-                new ResponseEntity<>("이미 로그아웃 되어있습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
+        userService.logout();
+        return new ResponseEntity<>("logout success",HttpStatus.OK);
     }
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.PUT, consumes = "application/json")
     @ApiOperation(value = "정보 수정", notes = "사용자의 정보를 수정합니다.")
     public ResponseEntity<String> updateUser(
-            @ApiParam(value = "(required: account_id, password, nick_name)", required = true) @RequestBody  User user) {
-        return userService.updateUser(user)?
-                new ResponseEntity<>("사용자 정보를 수정했습니다.",HttpStatus.OK):
-                new ResponseEntity<>("잘못된 정보입니다.",HttpStatus.INTERNAL_SERVER_ERROR);
+            @ApiParam(value = "(required: account_id, password, nick_name)", required = true) @RequestBody User user) {
+        userService.updateUser(user);
+        return new ResponseEntity<>("modify success",HttpStatus.OK);
     }
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.DELETE, consumes = "application/json")
@@ -64,8 +60,7 @@ public class UserController {
     public ResponseEntity<String> withdrawal(
             @ApiParam(value = "(required: account_id, password)", required = true) @RequestBody User user
     ) {
-        return userService.withdrawal(user)?
-                new ResponseEntity<>("회원탈퇴 성공",HttpStatus.OK):
-                new ResponseEntity<>("회원탈퇴 실패",HttpStatus.INTERNAL_SERVER_ERROR);
+        userService.withdrawal(user);
+        return new ResponseEntity<>("withdrawal success",HttpStatus.OK);
     }
 }
