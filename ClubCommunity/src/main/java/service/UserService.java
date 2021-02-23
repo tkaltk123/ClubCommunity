@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface UserService {
-    boolean register(User user);
-    boolean login(User user);
-    boolean logout();
-    boolean updateUser(User user);
-    boolean withdrawal(User user);
+    void register(User user);
+    void login(User user);
+    void logout();
+    void updateUser(User user);
+    void withdrawal(User user);
 }
