@@ -7,14 +7,17 @@ import java.sql.Timestamp;
 
 public class User {
     protected  Long id;
+    //계정은 6~16글자 영문 숫자만 허용
     @NotEmpty
     @Size(min=6,max=16)
     @Pattern(regexp = "[a-zA-Z0-9]+")
     protected  String account_id;
+    //비밀번호는 6~16글자 영문, 숫자, 11개의 특수문자만 허용
     @NotEmpty
     @Size(min=6,max=16)
     @Pattern(regexp = "[a-zA-Z0-9~!@#$%^&*()]+")
     protected  String password;
+    //닉네임은 2~12글자 영문, 숫자, 한글, 언더바만 허용 모음이나 자음은 불가
     @NotEmpty
     @Size(min=2,max=12)
     @Pattern(regexp = "[a-zA-Z0-9가-힣_]+")

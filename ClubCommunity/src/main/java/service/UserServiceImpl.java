@@ -4,7 +4,6 @@ import domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import repository.UserMapper;
 import util.MyUtil;
 
@@ -14,82 +13,94 @@ import javax.servlet.http.HttpSession;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserMapper userMapper;
-
+    //로그인 중이거나 계정이나 닉네임이 중복될 경우 예외 발생
+    //회원가입이 끝나면 자동으로 로그인
     @Override
-    @Transactional
     public void register(User user) {
         HttpSession session = MyUtil.getSession();
-        //로그인 상태일 경우
-        if(session.getAttribute("user-id")!=null)
+        if (loggedIn(session))
             throw new RuntimeException("already logged in.");
-        //삭제된 회원의 아이디나 닉네임도 중복 불가
-        if(userMapper.getUserByAccountId(user.getAccount_id()) != null)
-            throw new RuntimeException("account id conflict.");
-        if(userMapper.getUserByNickName(user.getNick_name()) != null)
-            throw new RuntimeException("nickname conflict");
-        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt())); //비밀번호 암호화
+        if (getSameAccountUser(user) != null)
+            throw new RuntimeException("is duplicated account id.");
+        if (getSameNicknameUser(user) != null)
+            throw new RuntimeException("is duplicated nickname");
+        //계정 추가
+        user.setPassword(getHashedPw(user));
         userMapper.insertUser(user);
-        User createdUser = userMapper.getUserByAccountId(user.getAccount_id());
-        session.setAttribute("user-id",createdUser.getId());
+        //세션 생성
+        Long userId = getSameAccountUser(user).getId();
+        session.setAttribute("user-id", userId);
     }
-
+    //로그인 중이거나 일치하는 계정이 없거나 이미 탈퇴한 회원이거나 비밀번호가 잘못된 경우 예외 발생
+    //로그인에 성공하면 세션 생성
     @Override
-    @Transactional
     public void login(User user) {
         HttpSession session = MyUtil.getSession();
-        if(session.getAttribute("user-id")!=null)
+        if(loggedIn(session) )
             throw new RuntimeException("already logged in.");
-        User userInfo = userMapper.getUserByAccountId(user.getAccount_id());
-        if(userInfo==null||//id가 일치하는 사용자가 없거나
-           userInfo.isDeleted()||   //이미 탈퇴한 회원이거나
-           !BCrypt.checkpw(user.getPassword(), userInfo.getPassword())) //비밀번호가 잘못되었을 경우
+        User dbUser = getSameAccountUser(user);
+        if(dbUser==null || dbUser.isDeleted() || MyUtil.incorrectPw(user, dbUser) )
             throw new RuntimeException("wrong account id or password.");
-        session.setAttribute("user-id",userInfo.getId());
+        //세션 생성
+        session.setAttribute("user-id", dbUser.getId() );
     }
-
+    //로그인 중이 아닐 경우 예외 발생
+    //로그인 중일 경우 세션을 지우면서 로그아웃
     @Override
-    @Transactional
     public void logout() {
         HttpSession session = MyUtil.getSession();
-        if(session.getAttribute("user-id")==null)
-            throw new RuntimeException("already logged out.");
+        if(!loggedIn(session) )
+            throw new RuntimeException("not logged in.");
         session.invalidate();
     }
+    //로그인 중인 사용자의 정보를 수정
+    //로그인 중이 아니거나 계정이나 닉네임이 중복될 경우 예외 발생
     @Override
-    @Transactional
     public void updateUser(User user) {
-        Long userId = (Long)MyUtil.getSession().getAttribute("user-id");
-        //세션이 없을 경우
+        Long userId = MyUtil.getUserId();
+        //로그인 중이 아닐 경우
         if(userId==null)
-            throw new RuntimeException("is wrong session.");
-        User userInfo = userMapper.getUserById(userId);
-        User sameAccountUser = userMapper.getUserByAccountId(user.getAccount_id());
-        //자신이 아닌 중복된 계정이 존재할 경우
-        if(sameAccountUser != null &&
-                !sameAccountUser.getAccount_id().equals(userInfo.getAccount_id()))
-            throw new RuntimeException("account id conflict.");
-        User sameNicknameUser = userMapper.getUserByNickName(user.getNick_name());
-        //자신이 아닌 중복된 닉네임이 존재할 경우
-        if(sameNicknameUser != null &&
-           !sameNicknameUser.getId().equals(userInfo.getId()))
-            throw new RuntimeException("nickname conflict.");
+            throw new RuntimeException("not logged in.");
+        //계정 중복
+        User sameAccountUser = getSameAccountUser(user);
+        if(sameAccountUser != null && MyUtil.isNotSameId(sameAccountUser,userId) )
+            throw new RuntimeException("is duplicated account id.");
+        //닉네임 중복
+        User sameNicknameUser = getSameNicknameUser(user);
+        if(sameNicknameUser != null && MyUtil.isNotSameId(sameNicknameUser,userId) )
+            throw new RuntimeException("is duplicated nickname.");
+        //정보 수정
         user.setId(userId);
-        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+        user.setPassword(getHashedPw(user) );
         userMapper.updateUser(user);
     }
-
+    //로그인 중이 아니거나 비밀번호가 틀릴 경우 예외 발생
+    //사용자는 soft delete 로 지워지고 회원탈퇴가 끝나면 로그아웃
     @Override
-    @Transactional
     public void withdrawal(User user) {
-        Long userId = (Long)MyUtil.getSession().getAttribute("user-id");
-        //세션이 없을 경우
+        Long userId = MyUtil.getUserId();
+        //로그인 중이 아닐 경우
         if(userId==null)
-            throw new RuntimeException("is wrong session.");
-        User userInfo = userMapper.getUserById(userId);
+            throw new RuntimeException("not logged in.");
+        User dbUser = userMapper.getUserById(userId);
         //비밀번호가 틀릴 경우
-        if(!BCrypt.checkpw(user.getPassword(), userInfo.getPassword()))
+        if(MyUtil.incorrectPw(user, dbUser) )
             throw new RuntimeException("is wrong password.");
+        //회원 탈퇴(soft delete)
         userMapper.softDeleteUser(userId);
         logout();
+    }
+
+    private boolean loggedIn(HttpSession session){
+        return session.getAttribute("user-id") != null;
+    }
+    private User getSameAccountUser(User user){
+        return userMapper.getUserByAccountId(user.getAccount_id() );
+    }
+    private User getSameNicknameUser(User user){
+        return userMapper.getUserByNickName(user.getNick_name() );
+    }
+    private String getHashedPw(User user){
+        return BCrypt.hashpw(user.getPassword(), BCrypt.gensalt() );
     }
 }

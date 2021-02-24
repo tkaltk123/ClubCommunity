@@ -7,25 +7,26 @@
         insert into clubs(owner_id,club_name,introduce)
         values(#{owner_id},#{club_name},#{introduce})
     </insert>
-    <select id="getClubById" resultType="Club">
-        select * from clubs
-        where id = #{id}
-    </select>
     <select id="getClubByName" resultType="Club">
         select * from clubs
         where club_name = #{name}
     </select>
+    <insert id="joinClub">
+        insert into user_club(user_id, club_id)
+        values (#{0},#{1});
+    </insert>
+    <update id="increaseMember">
+        update clubs
+        set member_num = member_num+1
+        where id = #{clubid}
+    </update>
     <select id="getClubs" resultType="Club">
         select * from clubs
         where deleted = false
     </select>
-    <select id="getClubsByOwner" resultType="Club">
+    <select id="getClubById" resultType="Club">
         select * from clubs
-        where owner_id = #{owner_id}
-    </select>
-    <select id="getJoinedClubs" resultType="Club">
-        select clubs.* from clubs
-        join user_club on clubs.id = user_club.club_id
+        where id = #{id}
     </select>
     <update id="updateClub">
         update clubs
@@ -34,26 +35,25 @@
             updated_at = now()
         where id = #{id}
     </update>
+    <select id="getClubsByOwner" resultType="Club">
+        select * from clubs
+        where owner_id = #{owner_id}
+    </select>
+    <select id="getJoinedClubs" resultType="Club">
+        select clubs.* from clubs
+        join user_club on clubs.id = user_club.club_id
+    </select>
     <update id="softDeleteClub">
         update clubs
         set deleted = true,
             updated_at = now()
         where id = #{id}
     </update>
-    <update id="increaseMember">
-        update clubs
-        set member_num = member_num+1
-        where id = #{clubid}
-    </update>
     <update id="decreaseMember">
         update clubs
         set member_num = member_num-1
         where id = #{clubid}
     </update>
-    <insert id="joinClub">
-        insert into user_club(user_id, club_id)
-        values (#{0},#{1});
-    </insert>
     <update id="rejoinClub">
         update user_club
         set deleted = false
