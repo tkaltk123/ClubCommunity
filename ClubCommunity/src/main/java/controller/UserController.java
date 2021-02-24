@@ -15,6 +15,8 @@ import service.UserService;
 
 import javax.validation.Valid;
 
+//실패는 서비스의 예외로 판단하고 무사히 처리됐을 경우 성공으로 판단
+//단순 검증인 로그인과 회원 탈퇴를 제외하고 회원가입과 정보 수정은 @Valid 로 유효성을 검사함
 @Controller
 @RequestMapping(value = "/user")
 public class UserController {
@@ -57,8 +59,7 @@ public class UserController {
     @RequestMapping(value = "", method = RequestMethod.DELETE, consumes = "application/json")
     @ApiOperation(value = "회원 탈퇴", notes = "사용자를 탈퇴시킵니다.")
     public ResponseEntity<String> withdrawal(
-            @ApiParam(value = "(required: account_id, password)", required = true) @RequestBody @Valid User user
-    ) {
+            @ApiParam(value = "(required:password)", required = true) @RequestBody User user) {
         userService.withdrawal(user);
         return new ResponseEntity<>("withdrawal success",HttpStatus.OK);
     }

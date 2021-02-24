@@ -19,8 +19,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             response.setStatus(500);
             return false;
         }
-        else{
-            return true;
-        }
+        return true;
     }
 }

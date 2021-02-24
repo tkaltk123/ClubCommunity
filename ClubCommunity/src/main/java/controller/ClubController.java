@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import service.ClubService;
-import service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -28,26 +27,31 @@ public class ClubController {
         clubService.create(club);
         return new ResponseEntity<>("club create success", HttpStatus.OK);
     }
+    @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ApiOperation(value = "소모임 조회", notes = "소모임 목록을 보여줍니다.")
-    public ResponseEntity<List<Club>> readClubs()
-    {
+    public ResponseEntity<List<Club>> readClubs(){
         return new ResponseEntity<>(clubService.getClubs(), HttpStatus.OK);
     }
-
+    //경로변수를 Club 객체에 담아 전달
     @ResponseBody
     @RequestMapping(value = "/{club-id}", method = RequestMethod.PUT)
     @ApiOperation(value = "소모임 수정", notes = "소모임의 소개를 수정합니다.")
-    public ResponseEntity<String> modifyClub(@PathVariable("club-id") Long clubid, @RequestBody Club club) {
+    public ResponseEntity<String> modifyClub(
+            @PathVariable("club-id") Long clubid,
+            @ApiParam(value = "(required: club_name, introduce)", required = true) @RequestBody @Valid Club club) {
         club.setId(clubid);
         clubService.update(club);
         return new ResponseEntity<>("club modify success", HttpStatus.OK);
     }
+
     @ResponseBody
     @RequestMapping(value = "/{club-id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "소모임 해체", notes = "소모임을 해체합니다.")
-    public ResponseEntity<String> deleteClub(@PathVariable("club-id") Long clubid) {
-        clubService.delete(clubid);
+    public ResponseEntity<String> deleteClub(
+            @PathVariable("club-id") Long clubid,
+            @ApiParam(value = "(required:password)", required = true) @RequestBody User user) {
+        clubService.delete(clubid, user);
         return new ResponseEntity<>("club delete success", HttpStatus.OK);
     }
 
