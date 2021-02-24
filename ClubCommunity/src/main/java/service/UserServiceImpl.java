@@ -4,6 +4,7 @@ import domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import repository.UserMapper;
 import util.MyUtil;
 
@@ -15,6 +16,7 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
 
     @Override
+    @Transactional
     public void register(User user) {
         HttpSession session = MyUtil.getSession();
         //로그인 상태일 경우
@@ -32,6 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void login(User user) {
         HttpSession session = MyUtil.getSession();
         if(session.getAttribute("user-id")!=null)
@@ -45,6 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void logout() {
         HttpSession session = MyUtil.getSession();
         if(session.getAttribute("user-id")==null)
@@ -52,6 +56,7 @@ public class UserServiceImpl implements UserService {
         session.invalidate();
     }
     @Override
+    @Transactional
     public void updateUser(User user) {
         Long userId = (Long)MyUtil.getSession().getAttribute("user-id");
         //세션이 없을 경우
@@ -74,6 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void withdrawal(User user) {
         Long userId = (Long)MyUtil.getSession().getAttribute("user-id");
         //세션이 없을 경우
@@ -83,7 +89,7 @@ public class UserServiceImpl implements UserService {
         //비밀번호가 틀릴 경우
         if(!BCrypt.checkpw(user.getPassword(), userInfo.getPassword()))
             throw new RuntimeException("is wrong password.");
-        userMapper.softDeleteUser(user);
+        userMapper.softDeleteUser(userId);
         logout();
     }
 }

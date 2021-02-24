@@ -4,5 +4,6 @@
 <configuration>
     <typeAliases>
         <typeAlias type="domain.User" alias="User"/>
+        <typeAlias type="domain.Club" alias="Club"/>
     </typeAliases>
 </configuration>
