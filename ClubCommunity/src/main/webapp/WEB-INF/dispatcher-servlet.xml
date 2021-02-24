@@ -23,7 +23,12 @@
 
     <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html" />
     <mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**" />
-
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/clubs/**" />
+            <bean class="interceptor.LoginInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="WEB-INF/views/"/>
         <property name="suffix" value=".jsp"/>

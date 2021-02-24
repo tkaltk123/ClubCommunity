@@ -10,9 +10,9 @@ import java.util.List;
 @Repository
 public interface UserMapper {
     public void insertUser(User user);
-    public User getUserByAccountId(String acid);
-    public User getUserById(long id);
+    public User getUserById(Long id);
+    public User getUserByAccountId(String account_id);
     public User getUserByNickName(String nick_name);
     public void updateUser(User user);
-    public void softDeleteUser(User user);
+    public void softDeleteUser(Long id);
 }

@@ -12,6 +12,7 @@ create table club_community.users(
 drop table if exists club_community.clubs;
 create table club_community.clubs(
     id              bigint      not null auto_increment unique primary key,
+    owner_id        bigint      not null,
     club_name       varchar(12)	not null unique,
     introduce       varchar(100),
     member_num      int         default	0,
