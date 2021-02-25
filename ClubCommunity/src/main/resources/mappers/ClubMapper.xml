@@ -76,8 +76,4 @@
         select clubs.* from clubs
         join user_club on clubs.id = user_club.club_id
     </select>
-    <insert id="insertClubBoard">
-        insert into boards(club_id, board_name)
-        values(#{id}, concat(#{club_name},' 게시판') )
-    </insert>
 </mapper>

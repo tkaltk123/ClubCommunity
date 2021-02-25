@@ -28,6 +28,7 @@ create table club_community.clubs(
 drop table if exists club_community.user_club;
 # 사용자-소모임 N:M 매핑 테이블
 # 사용자가 가입한 소모임을 의미한다.
+# 소모임이 삭제되도 정보는 유지된다.
 create table club_community.user_club(
     id              bigint      not null auto_increment unique primary key,
     user_id         bigint      not null,
@@ -41,6 +42,7 @@ drop table if exists club_community.boards;
 # 게시판 테이블
 # 기본적으로 자유 게시판이 존재하고 소모임이 추가될 때 마다 그 소모임에 해당하는 게시판이 추가된다.
 # club_id가 null 이면 모든 사용자가 열람 가능하다.
+# 소모임이 추가될때 추가되고 삭제될 때 삭제된다.
 create table club_community.boards(
     id              bigint      not null auto_increment unique primary key,
     club_id         bigint      default null,
