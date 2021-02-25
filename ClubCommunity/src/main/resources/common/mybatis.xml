@@ -5,5 +5,6 @@
     <typeAliases>
         <typeAlias type="domain.User" alias="User"/>
         <typeAlias type="domain.Club" alias="Club"/>
+        <typeAlias type="domain.Board" alias="Board"/>
     </typeAliases>
 </configuration>

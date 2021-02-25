@@ -22,5 +22,4 @@ public interface ClubMapper {
     public void decreaseMember(Long club_id);
     public List<Club> getClubsByOwner(Long owner_id);
     public List<Club> getJoinedClubs(Long user_id);
-    public void insertClubBoard(Club club);
 }

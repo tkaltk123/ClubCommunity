@@ -5,6 +5,7 @@ import domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import repository.BoardMapper;
 import repository.ClubMapper;
 import repository.UserMapper;
 import util.MyUtil;
@@ -17,6 +18,8 @@ public class ClubServiceImpl implements ClubService {
     UserMapper userMapper;
     @Autowired
     ClubMapper clubMapper;
+    @Autowired
+    BoardMapper boardMapper;
     //소모임 이름이 중복될 경우 예외 발생
     //소모임을 만든 유저는 자동 가입
     @Override
@@ -36,7 +39,7 @@ public class ClubServiceImpl implements ClubService {
         clubMapper.increaseMember(clubId);
         //게시판 추가
         club.setId(clubId);
-        clubMapper.insertClubBoard(club);
+        boardMapper.insertClubBoard(club);
 
     }
     //삭제되지 않은 소모임들을 반환
@@ -66,6 +69,7 @@ public class ClubServiceImpl implements ClubService {
             throw new RuntimeException("is wrong password.");
         //소모임 삭제(soft delete)
         clubMapper.softDeleteClub(club_id);
+        boardMapper.softDeleteBoard(club_id);
     }
 
     @Override
@@ -78,7 +82,7 @@ public class ClubServiceImpl implements ClubService {
         // 가입 이력이 존재할 경우
         if(joined != null){
             // 이미 가입된 경우
-            if(joined)
+            if(!joined)
                 throw  new RuntimeException("already join club.");
             clubMapper.rejoinClub(userId, club_id);
         }
@@ -95,8 +99,17 @@ public class ClubServiceImpl implements ClubService {
         Long userId = MyUtil.getUserId();
         Boolean joined = clubMapper.getJoined(userId, club_id);
         //가입되지 않은 경우
-        if(joined == null || !joined)
+        if(joined == null || joined)
             throw  new RuntimeException("not joined club.");
+        //소모임의 소유주가 탈퇴할 경우
+        if(userId.equals(dbClub.getOwner_id() ) ){
+            //회원이 있을 경우
+            if(dbClub.getMember_num() > 1)
+                throw  new RuntimeException("owner don't withdrawal club.");
+            //회원이 없을 경우
+            clubMapper.softDeleteClub(club_id);
+            boardMapper.softDeleteBoard(club_id);
+        }
         clubMapper.withdrawalClub(userId, club_id);
         clubMapper.decreaseMember(club_id);
     }
