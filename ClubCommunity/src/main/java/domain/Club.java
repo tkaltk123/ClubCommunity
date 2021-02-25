@@ -9,7 +9,6 @@ public class Club {
     protected  Long id;
     protected  Long owner_id;
     //소모임 이름은 2~12 글자의 알파벳,한글, 숫자, 언더바
-    @NotEmpty
     @Size(min=2,max=12)
     @Pattern(regexp = "[a-zA-Z0-9가-힣_]+")
     protected  String club_name;
