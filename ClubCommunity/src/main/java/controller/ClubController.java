@@ -33,6 +33,7 @@ public class ClubController {
     public ResponseEntity<List<Club>> readClubs(){
         return new ResponseEntity<>(clubService.getClubs(), HttpStatus.OK);
     }
+    //가입한 소모임 조회 필요
     //경로변수를 Club 객체에 담아 전달
     @ResponseBody
     @RequestMapping(value = "/{club-id}", method = RequestMethod.PUT)

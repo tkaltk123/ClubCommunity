@@ -26,6 +26,8 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/clubs/**" />
+            <mvc:mapping path="/boards/**" />
+            <mvc:mapping path="/comments/**" />
             <bean class="interceptor.LoginInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>
