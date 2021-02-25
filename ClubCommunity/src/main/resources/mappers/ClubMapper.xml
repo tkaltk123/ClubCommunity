@@ -3,6 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="repository.ClubMapper">
+    <resultMap id="Club" type="Club">
+        <result property="owner_name" column="nick_name"/>
+    </resultMap>
     <insert id="insertClub">
         insert into clubs(owner_id,club_name,introduce)
         values(#{owner_id},#{club_name},#{introduce})
@@ -17,12 +20,14 @@
     </insert>
     <update id="increaseMember">
         update clubs
-        set member_num = member_num+1
+        set member_num = member_num+1,
+            updated_at = now()
         where id = #{clubid}
     </update>
-    <select id="getClubs" resultType="Club">
-        select * from clubs
-        where deleted = false
+    <select id="getClubs" resultMap="Club">
+        select clubs.*, users.nick_name from clubs
+        join users on clubs.owner_id = users.id
+        where clubs.deleted = false
     </select>
     <select id="getClubById" resultType="Club">
         select * from clubs
@@ -35,6 +40,34 @@
             updated_at = now()
         where id = #{id}
     </update>
+    <update id="softDeleteClub">
+        update clubs
+        set deleted = true,
+            updated_at = now()
+        where id = #{id}
+    </update>
+    <select id="getJoined" resultType="Boolean">
+        select deleted from user_club
+        where user_id = #{0} and club_id = #{1}
+    </select>
+    <update id="rejoinClub">
+        update user_club
+        set deleted = false,
+            updated_at = now()
+        where user_id = #{0} and club_id = #{1}
+    </update>
+    <update id="withdrawalClub">
+        update user_club
+        set deleted = true,
+            updated_at = now()
+        where user_id = #{0} and club_id = #{1}
+    </update>
+    <update id="decreaseMember">
+        update clubs
+        set member_num = member_num - 1,
+            updated_at = now()
+        where id = #{clubid}
+    </update>
     <select id="getClubsByOwner" resultType="Club">
         select * from clubs
         where owner_id = #{owner_id}
@@ -43,25 +76,8 @@
         select clubs.* from clubs
         join user_club on clubs.id = user_club.club_id
     </select>
-    <update id="softDeleteClub">
-        update clubs
-        set deleted = true,
-            updated_at = now()
-        where id = #{id}
-    </update>
-    <update id="decreaseMember">
-        update clubs
-        set member_num = member_num-1
-        where id = #{clubid}
-    </update>
-    <update id="rejoinClub">
-        update user_club
-        set deleted = false
-        where user_id = #{user_id} and club_id = #{club_id}
-    </update>
-    <update id="withdrawalClub">
-        update user_club
-        set deleted = true
-        where user_id = #{user_id} and club_id = #{club_id}
-    </update>
+    <insert id="insertClubBoard">
+        insert into boards(club_id, board_name)
+        values(#{id}, concat(#{club_name},' 게시판') )
+    </insert>
 </mapper>

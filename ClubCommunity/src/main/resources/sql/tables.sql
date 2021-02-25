@@ -34,7 +34,8 @@ create table club_community.user_club(
     club_id         bigint      not null,
     created_at      timestamp   default now(),
     updated_at      timestamp   default now(),
-    deleted         bool        default false
+    deleted         bool        default false,
+    unique(user_id, club_id)
 );
 drop table if exists club_community.boards;
 # 게시판 테이블

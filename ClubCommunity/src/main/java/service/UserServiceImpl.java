@@ -62,12 +62,10 @@ public class UserServiceImpl implements UserService {
         if(userId==null)
             throw new RuntimeException("not logged in.");
         //계정 중복
-        User sameAccountUser = getSameAccountUser(user);
-        if(sameAccountUser != null && MyUtil.isNotSameId(sameAccountUser,userId) )
+        if(isDuplicatedUser(getSameAccountUser(user), userId) )
             throw new RuntimeException("is duplicated account id.");
         //닉네임 중복
-        User sameNicknameUser = getSameNicknameUser(user);
-        if(sameNicknameUser != null && MyUtil.isNotSameId(sameNicknameUser,userId) )
+        if(isDuplicatedUser(getSameNicknameUser(user), userId) )
             throw new RuntimeException("is duplicated nickname.");
         //정보 수정
         user.setId(userId);
@@ -102,5 +100,8 @@ public class UserServiceImpl implements UserService {
     }
     private String getHashedPw(User user){
         return BCrypt.hashpw(user.getPassword(), BCrypt.gensalt() );
+    }
+    private boolean isDuplicatedUser(User user, Long userId){
+        return user != null && MyUtil.isNotSameId(user,userId);
     }
 }

@@ -8,16 +8,20 @@ import java.sql.Timestamp;
 public class Club {
     protected  Long id;
     protected  Long owner_id;
+    //소모임 이름은 2~12 글자의 알파벳,한글, 숫자, 언더바
     @NotEmpty
     @Size(min=2,max=12)
     @Pattern(regexp = "[a-zA-Z0-9가-힣_]+")
     protected  String club_name;
+    //소모임 소개는 100글자 이하의 텍스트
     @Size(max=100)
     protected  String introduce;
     protected  int member_num;
     protected Timestamp created_at;
     protected Timestamp updated_at;
     protected boolean deleted;
+    //join 을 위한 필드
+    protected String owner_name;
 
     public Long getId() {
         return id;
@@ -81,5 +85,13 @@ public class Club {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public String getOwner_name() {
+        return owner_name;
+    }
+
+    public void setOwner_name(String owner_name) {
+        this.owner_name = owner_name;
     }
 }
