@@ -53,11 +53,11 @@ public class ClubServiceImpl implements ClubService {
     public void update(Club club) {
         Club dbClub = clubMapper.getClubById(club.getId() );
         //예외처리
-        if(notExist(dbClub) )
+        if(dbClub == null)
             throw new RuntimeException("club not exist.");
         if(notOwn(dbClub) )
             throw new RuntimeException("not own this club.");
-        if(duplicated(dbClub) )
+        if(duplicated(club) )
             throw new RuntimeException("is duplicated club name.");
         //수정
         clubMapper.updateClub(club);
@@ -67,7 +67,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public void delete(Long club_id, User user) {
         Club dbClub = clubMapper.getClubById(club_id);
-        if(notExist(dbClub) )
+        if(dbClub == null)
             throw new RuntimeException("club not exist.");
         if(notOwn(dbClub) )
             throw new RuntimeException("not own this club.");
@@ -83,7 +83,7 @@ public class ClubServiceImpl implements ClubService {
     @Transactional
     public void join(Long club_id) {
         Club dbClub = clubMapper.getClubById(club_id);
-        if(notExist(dbClub) )
+        if(dbClub == null)
             throw new RuntimeException("club not exist.");
         Long userId = MyUtil.getUserId();
         Boolean status = clubMapper.getJoinedStatus(userId, club_id);
@@ -103,7 +103,7 @@ public class ClubServiceImpl implements ClubService {
     @Transactional
     public void withdrawal(Long club_id) {
         Club dbClub = clubMapper.getClubById(club_id);
-        if(notExist(dbClub) )
+        if(dbClub == null)
             throw new RuntimeException("club not exist.");
         Long userId = MyUtil.getUserId();
         Boolean status = clubMapper.getJoinedStatus(userId, club_id);
@@ -125,9 +125,6 @@ public class ClubServiceImpl implements ClubService {
 
     private  Club getSameNameClub(Club club){
         return clubMapper.getClubByName(club.getClub_name() );
-    }
-    private boolean notExist(Club club){
-        return club == null || club.isDeleted();
     }
     private boolean notOwn(Club club){
         return !club.getOwner_id().equals(MyUtil.getUserId() );

@@ -7,18 +7,20 @@
         insert into users(account_id,password,nick_name)
         values(#{account_id},#{password},#{nick_name})
     </insert>
+
     <select id="getUserById" resultType="User">
-        select * from users
-        where id = #{id}
+        select id, account_id, nick_name, password from users
+        where id = #{id} and deleted = false
     </select>
     <select id="getUserByAccountId" resultType="User">
-        select * from users
-        where account_id = #{account_id}
+        select id, account_id, nick_name, password from users
+        where account_id = #{account_id} and deleted = false
     </select>
     <select id="getUserByNickName" resultType="User">
-        select * from users
-        where nick_name = #{nick_name}
+        select id, account_id, nick_name, password  from users
+        where nick_name = #{nick_name} and deleted = false
     </select>
+
     <update id="updateUser">
         update users
         set account_id = #{account_id},
