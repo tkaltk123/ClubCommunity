@@ -8,7 +8,11 @@ import java.util.List;
 
 @Repository
 public interface BoardMapper {
-    public void insertClubBoard(Club club);
-    public void softDeleteBoard(Long club_id);
-    public List<Board> getBoards(Long user_id);
+    //insert
+    void insertClubBoard(Club club);
+    //select
+    List<Board> getBoards(Long user_id);
+    Board getBoardById(Long board_id);
+    //update
+    void softDeleteBoard(Long club_id);
 }

@@ -18,6 +18,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void register(User user) {
         HttpSession session = MyUtil.getSession();
+        //예외처리
         if (loggedIn(session))
             throw new RuntimeException("already logged in.");
         if (getSameAccountUser(user) != null)
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void login(User user) {
         HttpSession session = MyUtil.getSession();
+        //예외처리
         if(loggedIn(session) )
             throw new RuntimeException("already logged in.");
         User dbUser = getSameAccountUser(user);
@@ -49,8 +51,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void logout() {
         HttpSession session = MyUtil.getSession();
+        //예외처리
         if(!loggedIn(session) )
             throw new RuntimeException("not logged in.");
+        //로그아웃
         session.invalidate();
     }
     //로그인 중인 사용자의 정보를 수정
@@ -58,13 +62,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(User user) {
         Long userId = MyUtil.getUserId();
-        //로그인 중이 아닐 경우
+        //예외처리
         if(userId==null)
             throw new RuntimeException("not logged in.");
-        //계정 중복
         if(isDuplicatedUser(getSameAccountUser(user), userId) )
             throw new RuntimeException("is duplicated account id.");
-        //닉네임 중복
         if(isDuplicatedUser(getSameNicknameUser(user), userId) )
             throw new RuntimeException("is duplicated nickname.");
         //정보 수정
@@ -77,11 +79,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void withdrawal(User user) {
         Long userId = MyUtil.getUserId();
-        //로그인 중이 아닐 경우
+        //예외처리
         if(userId==null)
             throw new RuntimeException("not logged in.");
         User dbUser = userMapper.getUserById(userId);
-        //비밀번호가 틀릴 경우
         if(MyUtil.incorrectPw(user, dbUser) )
             throw new RuntimeException("is wrong password.");
         //회원 탈퇴(soft delete)

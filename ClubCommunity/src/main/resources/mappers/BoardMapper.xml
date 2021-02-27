@@ -3,19 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="repository.BoardMapper">
-    <resultMap id="Club" type="Club">
-        <result property="owner_name" column="nick_name"/>
-    </resultMap>
     <insert id="insertClubBoard">
         insert into boards(club_id, board_name)
         values(#{id}, concat(#{club_name},' 게시판') )
     </insert>
-    <update id="softDeleteBoard">
-        update boards
-        set deleted = true,
-            updated_at = now()
-        where club_id = #{0}
-    </update>
+
     <select id="getBoards" resultType="Board">
         select b.id, b.club_id, b.board_name
         from boards b
@@ -24,4 +16,16 @@
               b.club_id is null or uc.user_id = #{0}
               )
     </select>
+    <select id="getBoardById" resultType="Board">
+        select id, club_id from boards
+        where id = #{0} and
+              deleted = false
+    </select>
+
+    <update id="softDeleteBoard">
+        update boards
+        set deleted = true,
+            updated_at = now()
+        where club_id = #{0}
+    </update>
 </mapper>
