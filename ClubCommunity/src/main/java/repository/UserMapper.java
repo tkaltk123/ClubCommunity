@@ -1,18 +1,17 @@
 package repository;
 
 import domain.User;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface UserMapper {
-    public void insertUser(User user);
-    public User getUserById(Long id);
-    public User getUserByAccountId(String account_id);
-    public User getUserByNickName(String nick_name);
-    public void updateUser(User user);
-    public void softDeleteUser(Long id);
+    //insert
+    void insertUser(User user);
+    //select
+    User getUserById(Long id);
+    User getUserByAccountId(String account_id);
+    User getUserByNickName(String nick_name);
+    //update
+    void updateUser(User user);
+    void softDeleteUser(Long id);
 }

@@ -10,20 +10,15 @@
         insert into clubs(owner_id,club_name,introduce)
         values(#{owner_id},#{club_name},#{introduce})
     </insert>
-    <select id="getClubByName" resultType="Club">
-        select * from clubs
-        where club_name = #{name}
-    </select>
     <insert id="joinClub">
         insert into user_club(user_id, club_id)
         values (#{0},#{1});
     </insert>
-    <update id="increaseMember">
-        update clubs
-        set member_num = member_num+1,
-            updated_at = now()
-        where id = #{clubid}
-    </update>
+
+    <select id="getClubByName" resultType="Club">
+        select id, deleted from clubs
+        where club_name = #{name}
+    </select>
     <select id="getClubs" resultMap="Club">
         select clubs.*, users.nick_name from clubs
         join users on clubs.owner_id = users.id
@@ -33,6 +28,24 @@
         select * from clubs
         where id = #{id}
     </select>
+    <select id="getJoinedStatus" resultType="Boolean">
+        select deleted from user_club
+        where user_id = #{0} and club_id = #{1}
+    </select>
+    <select id="getJoinedClubs" resultType="Club">
+        select clubs.* from clubs
+                                join user_club on clubs.id = user_club.club_id
+        where clubs.deleted = false and
+            user_club.deleted = false and
+            user_club.user_id = #{0}
+    </select>
+
+    <update id="increaseMember">
+        update clubs
+        set member_num = member_num+1,
+            updated_at = now()
+        where id = #{clubid}
+    </update>
     <update id="updateClub">
         update clubs
         set club_name = #{club_name},
@@ -46,10 +59,6 @@
             updated_at = now()
         where id = #{id}
     </update>
-    <select id="getJoined" resultType="Boolean">
-        select deleted from user_club
-        where user_id = #{0} and club_id = #{1}
-    </select>
     <update id="rejoinClub">
         update user_club
         set deleted = false,
@@ -68,12 +77,4 @@
             updated_at = now()
         where id = #{clubid}
     </update>
-    <select id="getClubsByOwner" resultType="Club">
-        select * from clubs
-        where owner_id = #{owner_id}
-    </select>
-    <select id="getJoinedClubs" resultType="Club">
-        select clubs.* from clubs
-        join user_club on clubs.id = user_club.club_id
-    </select>
 </mapper>

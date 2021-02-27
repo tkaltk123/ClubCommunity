@@ -6,4 +6,38 @@
     <resultMap id="Post" type="Post">
         <result property="writer_name" column="nick_name"/>
     </resultMap>
+    <insert id="insertPost">
+        insert into posts(board_id, title, content, writer_id)
+        values(#{board_id}, #{title}, #{content}, #{writer_id} )
+    </insert>
+
+    <select id="getPosts" resultType="Post">
+        select p.id, p.board_id, p.title, p.comment_num, p.hit, u.nick_name from posts p
+        join users u on p.writer_id = u.id
+        where p.deleted = false and p.board_id = #{0}
+    </select>
+    <select id="getPostById" resultType="Post">
+        select p.id, p.board_id, p.title, p.content, p.writer_id, p.comment_num, p.hit, u.nick_name from posts p
+        join users u on p.writer_id = u.id
+        where p.deleted = false and p.id = #{0}
+    </select>
+
+    <update id="increaseHit">
+        update posts
+        set hit = hit+1
+        where id = #{0}
+    </update>
+    <update id="updatePost">
+        update posts
+        set title = #{title},
+            content = #{content},
+            updated_at = now()
+        where id = #{id}
+    </update>
+    <update id="softDeletePost">
+        update posts
+        set deleted = true,
+            updated_at = now()
+        where id = #{id}
+    </update>
 </mapper>
