@@ -23,7 +23,8 @@ public class ClubController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ApiOperation(value = "소모임 생성", notes = "소모임을 생성합니다.")
     public ResponseEntity<String> createClub(
-            @ApiParam(value = "(required: club_name, introduce)", required = true) @RequestBody @Valid Club club) {
+            @ApiParam(value = "(required: club_name, introduce)", required = true)
+            @RequestBody @Valid Club club) {
         clubService.create(club);
         return new ResponseEntity<>("club create success", HttpStatus.OK);
     }
@@ -40,7 +41,8 @@ public class ClubController {
     @ApiOperation(value = "소모임 수정", notes = "소모임의 소개를 수정합니다.")
     public ResponseEntity<String> modifyClub(
             @PathVariable("club-id") Long clubid,
-            @ApiParam(value = "(required: club_name, introduce)", required = true) @RequestBody @Valid Club club) {
+            @ApiParam(value = "(required: club_name, introduce)", required = true)
+            @RequestBody @Valid Club club) {
         club.setId(clubid);
         clubService.update(club);
         return new ResponseEntity<>("club modify success", HttpStatus.OK);
@@ -51,7 +53,8 @@ public class ClubController {
     @ApiOperation(value = "소모임 해체", notes = "소모임을 해체합니다.")
     public ResponseEntity<String> deleteClub(
             @PathVariable("club-id") Long clubid,
-            @ApiParam(value = "(required:password)", required = true) @RequestBody User user) {
+            @ApiParam(value = "(required:password)", required = true)
+            @RequestBody User user) {
         clubService.delete(clubid, user);
         return new ResponseEntity<>("club delete success", HttpStatus.OK);
     }

@@ -24,7 +24,8 @@ public class PostController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ApiOperation(value = "게시글 작성", notes = "선택한 게시판에 게시글을 작성합니다.")
     public ResponseEntity<String> createPost(
-            @ApiParam(value = "(required: board_id, title, content)", required = true) @RequestBody @Valid Post post) {
+            @ApiParam(value = "(required: board_id, title, content)", required = true)
+            @RequestBody @Valid Post post) {
         if(post.getBoard_id() == null)
             new ResponseEntity<>("board_id : not null.", HttpStatus.BAD_REQUEST);
         postService.createPost(post);
@@ -49,7 +50,8 @@ public class PostController {
     @ApiOperation(value = "게시글 수정", notes = "선택한 게시글을 수정합니다.")
     public ResponseEntity<String> updatePost(
             @PathVariable("post-id") Long postId,
-            @ApiParam(value = "(required: title, content)", required = true) @RequestBody @Valid Post post){
+            @ApiParam(value = "(required: title, content)", required = true)
+            @RequestBody @Valid Post post){
         post.setId(postId);
         postService.updatePost(post);
         return new ResponseEntity<>("post update success.", HttpStatus.OK);
