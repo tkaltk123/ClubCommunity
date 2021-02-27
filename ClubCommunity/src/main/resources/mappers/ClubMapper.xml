@@ -16,17 +16,19 @@
     </insert>
 
     <select id="getClubByName" resultType="Club">
-        select id, deleted from clubs
+        select id from clubs
         where club_name = #{name}
+          and deleted = false
     </select>
     <select id="getClubs" resultMap="Club">
-        select clubs.*, users.nick_name from clubs
-        join users on clubs.owner_id = users.id
-        where clubs.deleted = false
+        select c.id, c.owner_id, c. club_name, c.introduce, c.member_num, c.created_at, u.nick_name from clubs c
+        join users u on c.owner_id = u.id
+        where c.deleted = false
     </select>
     <select id="getClubById" resultType="Club">
-        select * from clubs
+        select id, owner_id, club_name, introduce, member_num, created_at from clubs
         where id = #{id}
+          and deleted = false
     </select>
     <select id="getJoinedStatus" resultType="Boolean">
         select deleted from user_club
@@ -34,7 +36,7 @@
     </select>
     <select id="getJoinedClubs" resultType="Club">
         select clubs.* from clubs
-                                join user_club on clubs.id = user_club.club_id
+        join user_club on clubs.id = user_club.club_id
         where clubs.deleted = false and
             user_club.deleted = false and
             user_club.user_id = #{0}
