@@ -7,5 +7,6 @@
         <typeAlias type="domain.Club" alias="Club"/>
         <typeAlias type="domain.Board" alias="Board"/>
         <typeAlias type="domain.Post" alias="Post"/>
+        <typeAlias type="domain.Comment" alias="Comment"/>
     </typeAliases>
 </configuration>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="repository.CommentMapper">
+    <resultMap id="Comment" type="Comment">
+        <result property="writer_name" column="nick_name"/>
+    </resultMap>
+    <insert id="insertComment">
+        insert into comments(post_id, content, writer_id)
+        values(#{post_id}, #{content}, #{writer_id} )
+    </insert>
+
+    <select id="getComments" resultMap="Comment">
+        select c.id, c.post_id, c.content, c.created_at, u.nick_name from comments c
+        join users u on c.writer_id = u.id
+        where c.deleted = false
+          and c.post_id = #{0}
+    </select>
+    <select id="getCommentById" resultType="Comment">
+        select id, post_id, writer_id, created_at from comments
+        where deleted = false
+          and id = #{0}
+    </select>
+
+    <update id="updateComment">
+        update comments
+        set content = #{content},
+            updated_at = now()
+        where id = #{id}
+    </update>
+    <update id="softDeleteComment">
+        update comments
+        set deleted = true,
+            updated_at = now()
+        where id = #{id}
+    </update>
+</mapper>

@@ -27,7 +27,8 @@ public class UserController {
     @RequestMapping(value = "", method = RequestMethod.POST, consumes = "application/json")
     @ApiOperation(value = "회원 가입", notes = "회원가입을 처리합니다.")
     public ResponseEntity<String> join(
-            @ApiParam(value = "(required: account_id, password, nick_name)", required = true) @RequestBody @Valid User user) {
+            @ApiParam(value = "(required: account_id, password, nick_name)", required = true)
+            @RequestBody @Valid User user) {
         userService.register(user);
         return new ResponseEntity<>("join success",HttpStatus.OK);
     }
@@ -36,7 +37,8 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = "application/json")
     @ApiOperation(value = "로그인", notes = "로그인을 처리합니다.")
     public ResponseEntity<String> login(
-            @ApiParam(value = "(required: account_id, password)", required = true) @RequestBody User user) {
+            @ApiParam(value = "(required: account_id, password)", required = true)
+            @RequestBody User user) {
         userService.login(user);
         return new ResponseEntity<>("login success",HttpStatus.OK);
     }
@@ -51,7 +53,8 @@ public class UserController {
     @RequestMapping(value = "", method = RequestMethod.PUT, consumes = "application/json")
     @ApiOperation(value = "정보 수정", notes = "사용자의 정보를 수정합니다.")
     public ResponseEntity<String> updateUser(
-            @ApiParam(value = "(required: account_id, password, nick_name)", required = true) @RequestBody User user) {
+            @ApiParam(value = "(required: account_id, password, nick_name)", required = true)
+            @RequestBody User user) {
         userService.updateUser(user);
         return new ResponseEntity<>("modify success",HttpStatus.OK);
     }
@@ -59,7 +62,8 @@ public class UserController {
     @RequestMapping(value = "", method = RequestMethod.DELETE, consumes = "application/json")
     @ApiOperation(value = "회원 탈퇴", notes = "사용자를 탈퇴시킵니다.")
     public ResponseEntity<String> withdrawal(
-            @ApiParam(value = "(required:password)", required = true) @RequestBody User user) {
+            @ApiParam(value = "(required:password)", required = true)
+            @RequestBody User user) {
         userService.withdrawal(user);
         return new ResponseEntity<>("withdrawal success",HttpStatus.OK);
     }
