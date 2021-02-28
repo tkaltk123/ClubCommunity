@@ -35,11 +35,11 @@
         where user_id = #{0} and club_id = #{1}
     </select>
     <select id="getJoinedClubs" resultType="Club">
-        select clubs.* from clubs
-        join user_club on clubs.id = user_club.club_id
-        where clubs.deleted = false and
-            user_club.deleted = false and
-            user_club.user_id = #{0}
+        select c.* from clubs c
+        join user_club uc on c.id = uc.club_id
+        where c.deleted = false
+          and uc.deleted = false
+          and uc.user_id = #{0}
     </select>
 
     <update id="increaseMember">

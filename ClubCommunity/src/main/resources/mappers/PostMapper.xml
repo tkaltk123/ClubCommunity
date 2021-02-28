@@ -11,12 +11,12 @@
         values(#{board_id}, #{title}, #{content}, #{writer_id} )
     </insert>
 
-    <select id="getPosts" resultType="Post">
-        select p.id, p.board_id, p.title, p.comment_num, p.hit, p.created_at, u.nick_name from posts p
+    <select id="getPosts" resultMap="Post">
+        select p.id, p.board_id, p.title, p.comment_num, p.hit, p.writer_id, p.created_at, u.nick_name from posts p
         join users u on p.writer_id = u.id
         where p.deleted = false and p.board_id = #{0}
     </select>
-    <select id="getPostById" resultType="Post">
+    <select id="getPostById" resultMap="Post">
         select p.id, p.board_id, p.title, p.content, p.writer_id, p.comment_num, p.hit, p.created_at, u.nick_name from posts p
         join users u on p.writer_id = u.id
         where p.deleted = false and p.id = #{0}
