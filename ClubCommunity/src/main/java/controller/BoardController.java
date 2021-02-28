@@ -17,7 +17,7 @@ public class BoardController {
     @Autowired
     BoardService boardService;
     @ResponseBody
-    @RequestMapping(value = "/boards", method = RequestMethod.POST)
+    @RequestMapping(value = "/boards", method = RequestMethod.GET)
     @ApiOperation(value = "게시판 조회", notes = "사용 가능한 게시판을 불러옵니다.")
     public ResponseEntity<List<Board>> readBoards() {
         return new ResponseEntity<>(boardService.getBoards(), HttpStatus.OK);

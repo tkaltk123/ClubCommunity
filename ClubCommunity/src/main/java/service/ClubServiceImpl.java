@@ -51,12 +51,7 @@ public class ClubServiceImpl implements ClubService {
     //소모임 이름이 중복될 경우 예외 발생
     @Override
     public void update(Club club) {
-        Club dbClub = clubMapper.getClubById(club.getId() );
-        //예외처리
-        if(dbClub == null)
-            throw new RuntimeException("club not exist.");
-        if(notOwn(dbClub) )
-            throw new RuntimeException("not own this club.");
+        checkClub(club.getId() );
         if(duplicated(club) )
             throw new RuntimeException("is duplicated club name.");
         //수정
@@ -66,11 +61,7 @@ public class ClubServiceImpl implements ClubService {
     //club 이 삭제되도 소모임 가입 상황, 게시판, 게시글, 댓글은 상태 유지
     @Override
     public void delete(Long club_id, User user) {
-        Club dbClub = clubMapper.getClubById(club_id);
-        if(dbClub == null)
-            throw new RuntimeException("club not exist.");
-        if(notOwn(dbClub) )
-            throw new RuntimeException("not own this club.");
+        checkClub(club_id);
         User dbUser = userMapper.getUserById(MyUtil.getUserId());
         if(MyUtil.incorrectPw(user, dbUser) )
             throw new RuntimeException("is wrong password.");
@@ -78,7 +69,6 @@ public class ClubServiceImpl implements ClubService {
         clubMapper.softDeleteClub(club_id);
         boardMapper.softDeleteBoard(club_id);
     }
-
     @Override
     @Transactional
     public void join(Long club_id) {
@@ -132,5 +122,13 @@ public class ClubServiceImpl implements ClubService {
     private  boolean duplicated(Club club){
         Club sameNameClub = getSameNameClub(club);
         return sameNameClub != null && MyUtil.isNotSameId(sameNameClub, club.getId() );
+    }
+    //club id를 받아 클럽이 존재하는지와 사용자가 클럽을 소유하고 있는지를 확인
+    private void checkClub(Long clubId){
+        Club dbClub = clubMapper.getClubById(clubId);
+        if(dbClub == null)
+            throw new RuntimeException("club not exist.");
+        if(notOwn(dbClub) )
+            throw new RuntimeException("not own this club.");
     }
 }
