@@ -9,6 +9,7 @@ import repository.ClubMapper;
 import repository.PostMapper;
 import util.MyUtil;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
@@ -43,12 +44,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post getPost(Long postId)
     {
+        HttpSession session = MyUtil.getSession();
         Post post = postMapper.getPostById(postId);
         //예외처리
         checkBoard(post);
         //조회수 증가
-        post.setHit(post.getHit() + 1);
-        postMapper.increaseHit(postId);
+        if(session.getAttribute(postId.toString())==null) {
+            post.setHit(post.getHit() + 1);
+            postMapper.increaseHit(postId);
+            session.setAttribute(postId.toString(),true);
+        }
         //게시글 조회
         return post;
     }
