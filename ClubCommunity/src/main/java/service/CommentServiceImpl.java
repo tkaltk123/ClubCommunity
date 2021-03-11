@@ -40,10 +40,7 @@ public class CommentServiceImpl implements CommentService {
         long offset = (page - 1) * PAGE_SIZE;
         if(offset < 0)
             offset = 0;
-        List<Comment> result = commentMapper.getComments(postId, offset, PAGE_SIZE);
-        if(result.size() == 0)
-            throw new RuntimeException("page out of range.");
-        return result;
+        return commentMapper.getComments(postId, offset, PAGE_SIZE);
     }
 
     @Override

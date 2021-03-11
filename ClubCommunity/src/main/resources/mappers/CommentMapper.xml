@@ -16,6 +16,7 @@
         JOIN users u ON c.WRITER_ID = u.ID
         WHERE c.DELETED = FALSE
           AND c.POST_ID = #{0}
+        ORDER BY c.ID
         LIMIT #{1}, #{2}
     </select>
     <select id="getCommentById" resultType="Comment">

@@ -43,10 +43,7 @@ public class PostServiceImpl implements PostService {
         long offset = (page - 1) * PAGE_SIZE;
         if(offset < 0)
             offset = 0;
-        List<Post> result = postMapper.getPosts(boardId, offset, PAGE_SIZE);
-        if(result.size() == 0)
-            throw new RuntimeException("page out of range.");
-        return result;
+        return postMapper.getPosts(boardId, offset, PAGE_SIZE);
     }
     @Override
     public Post getPost(Long postId)

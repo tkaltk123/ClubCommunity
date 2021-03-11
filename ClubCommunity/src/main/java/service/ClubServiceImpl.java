@@ -51,10 +51,7 @@ public class ClubServiceImpl implements ClubService {
         long offset = (page - 1) * PAGE_SIZE;
         if(offset < 0)
             offset = 0;
-        List<Club> result = clubMapper.getClubs(offset, PAGE_SIZE);
-        if(result.size() == 0)
-            throw new RuntimeException("page out of range.");
-        return result;
+        return clubMapper.getClubs(offset, PAGE_SIZE);
     }
     //club_id를 가진 소모임이 존재하지 않거나 로그인된 사용자와 소모임의 소유자가 일치하지 않거나
     //소모임 이름이 중복될 경우 예외 발생

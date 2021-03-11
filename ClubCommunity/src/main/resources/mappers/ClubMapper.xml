@@ -24,6 +24,8 @@
         SELECT c.ID, c.OWNER_ID, c. CLUB_NAME, c.INTRODUCE, c.MEMBER_NUM, c.CREATED_AT, u.NICK_NAME FROM CLUBS c
         JOIN USERS u ON c.OWNER_ID = u.ID
         WHERE c.DELETED = FALSE
+        ORDER BY c.ID
+        LIMIT #{0}, #{1}
     </select>
     <select id="getClubById" resultType="Club">
         SELECT ID, OWNER_ID, CLUB_NAME, INTRODUCE, MEMBER_NUM, CREATED_AT FROM CLUBS
