@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ClubService {
     void create(Club club);
-    List<Club> getClubs();
+    List<Club> getClubs(Long page);
     void update(Club club);
     void delete(Long club_id, User user);
     void join(Long club_id);

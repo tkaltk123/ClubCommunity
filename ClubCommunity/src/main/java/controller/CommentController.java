@@ -31,8 +31,9 @@ public class CommentController {
     @RequestMapping(value = "/posts/{post-id}", method = RequestMethod.GET)
     @ApiOperation(value = "댓글 조회", notes = "선택한 게시글의 댓글들을 보여줍니다.")
     public ResponseEntity<List<Comment>> readComments(
-            @PathVariable("post-id") Long postId){
-        return new ResponseEntity<>(commentService.getComments(postId), HttpStatus.OK);
+            @PathVariable("post-id") Long postId,
+            @RequestParam(defaultValue = "1") Long page){
+        return new ResponseEntity<>(commentService.getComments(postId, page), HttpStatus.OK);
     }
     @ResponseBody
     @RequestMapping(value = "/{comment-id}", method = RequestMethod.PUT)

@@ -1,6 +1,7 @@
 package service;
 
 import domain.Club;
+import domain.Post;
 import domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class ClubServiceImpl implements ClubService {
     ClubMapper clubMapper;
     @Autowired
     BoardMapper boardMapper;
+    static final int PAGE_SIZE = 20;
     //소모임 이름이 중복될 경우 예외 발생
     //소모임을 만든 유저는 자동 가입
     @Override
@@ -31,21 +33,28 @@ public class ClubServiceImpl implements ClubService {
             throw new RuntimeException("is duplicated club name.");
         //소모임 생성
         Long ownerId = MyUtil.getUserId();
+        if(clubMapper.getJoinedClubNum(ownerId)>=20)
+            throw new RuntimeException("Only up to 20 clubs are eligible to join.");
         club.setOwner_id(ownerId);
         clubMapper.insertClub(club);
         //소유자를 소모임에 추가
         Long clubId = clubMapper.getClubByName(clubName).getId();
-        clubMapper.joinClub(ownerId,clubId);
+        clubMapper.joinClub(ownerId, clubId);
         clubMapper.increaseMember(clubId);
         //게시판 추가
         club.setId(clubId);
         boardMapper.insertClubBoard(club);
-
     }
     //삭제되지 않은 소모임들을 반환
     @Override
-    public List<Club> getClubs() {
-        return clubMapper.getClubs();
+    public List<Club> getClubs(Long page) {
+        long offset = (page - 1) * PAGE_SIZE;
+        if(offset < 0)
+            offset = 0;
+        List<Club> result = clubMapper.getClubs(offset, PAGE_SIZE);
+        if(result.size() == 0)
+            throw new RuntimeException("page out of range.");
+        return result;
     }
     //club_id를 가진 소모임이 존재하지 않거나 로그인된 사용자와 소모임의 소유자가 일치하지 않거나
     //소모임 이름이 중복될 경우 예외 발생
@@ -71,46 +80,48 @@ public class ClubServiceImpl implements ClubService {
     }
     @Override
     @Transactional
-    public void join(Long club_id) {
-        Club dbClub = clubMapper.getClubById(club_id);
+    public void join(Long clubId) {
+        Club dbClub = clubMapper.getClubById(clubId);
         if(dbClub == null)
             throw new RuntimeException("club not exist.");
         Long userId = MyUtil.getUserId();
-        Boolean status = clubMapper.getJoinedStatus(userId, club_id);
+        if(clubMapper.getJoinedClubNum(userId)>=20)
+            throw new RuntimeException("Only up to 20 clubs are eligible to join.");
+        Boolean status = clubMapper.getJoinedStatus(userId, clubId);
         // 가입 이력이 존재할 경우
         if(status != null){
             // 이미 가입된 경우
             if(!status)
                 throw  new RuntimeException("already join club.");
-            clubMapper.rejoinClub(userId, club_id);
+            clubMapper.rejoinClub(userId, clubId);
         }
         else
-            clubMapper.joinClub(userId, club_id);
-        clubMapper.increaseMember(club_id);
+            clubMapper.joinClub(userId, clubId);
+        clubMapper.increaseMember(clubId);
     }
 
     @Override
     @Transactional
-    public void withdrawal(Long club_id) {
-        Club dbClub = clubMapper.getClubById(club_id);
+    public void withdrawal(Long clubId) {
+        Club dbClub = clubMapper.getClubById(clubId);
         if(dbClub == null)
             throw new RuntimeException("club not exist.");
         Long userId = MyUtil.getUserId();
-        Boolean status = clubMapper.getJoinedStatus(userId, club_id);
+        Boolean status = clubMapper.getJoinedStatus(userId, clubId);
         //가입되지 않은 경우
         if(status == null || status)
             throw  new RuntimeException("not joined club.");
+        clubMapper.withdrawalClub(userId, clubId);
+        clubMapper.decreaseMember(clubId);
         //소모임의 소유주가 탈퇴할 경우
         if(userId.equals(dbClub.getOwner_id() ) ){
             //회원이 있을 경우
             if(dbClub.getMember_num() > 1)
                 throw  new RuntimeException("owner don't withdrawal club.");
             //회원이 없을 경우
-            clubMapper.softDeleteClub(club_id);
-            boardMapper.softDeleteBoard(club_id);
+            clubMapper.softDeleteClub(clubId);
+            boardMapper.softDeleteBoard(clubId);
         }
-        clubMapper.withdrawalClub(userId, club_id);
-        clubMapper.decreaseMember(club_id);
     }
 
     private  Club getSameNameClub(Club club){

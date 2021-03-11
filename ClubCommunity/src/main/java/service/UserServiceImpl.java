@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
         if(loggedIn(session) )
             throw new RuntimeException("already logged in.");
         User dbUser = getSameAccountUser(user);
-        if(dbUser==null || dbUser.isDeleted() || MyUtil.incorrectPw(user, dbUser) )
+        if(dbUser==null || MyUtil.incorrectPw(user, dbUser) )
             throw new RuntimeException("wrong account id or password.");
         //세션 생성
         session.setAttribute("user-id", dbUser.getId() );

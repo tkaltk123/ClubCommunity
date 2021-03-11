@@ -31,8 +31,8 @@ public class ClubController {
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ApiOperation(value = "소모임 조회", notes = "소모임 목록을 보여줍니다.")
-    public ResponseEntity<List<Club>> readClubs(){
-        return new ResponseEntity<>(clubService.getClubs(), HttpStatus.OK);
+    public ResponseEntity<List<Club>> readClubs(@RequestParam(defaultValue = "1") Long page){
+        return new ResponseEntity<>(clubService.getClubs(page), HttpStatus.OK);
     }
     //가입한 소모임 조회 필요
     //경로변수를 Club 객체에 담아 전달

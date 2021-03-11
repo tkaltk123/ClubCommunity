@@ -7,37 +7,41 @@
         <result property="writer_name" column="nick_name"/>
     </resultMap>
     <insert id="insertPost">
-        insert into posts(board_id, title, content, writer_id)
+        INSERT INTO POSTS(BOARD_ID, TITLE, CONTENT, WRITER_ID)
         values(#{board_id}, #{title}, #{content}, #{writer_id} )
     </insert>
 
     <select id="getPosts" resultMap="Post">
-        select p.id, p.board_id, p.title, p.comment_num, p.hit, p.writer_id, p.created_at, u.nick_name from posts p
-        join users u on p.writer_id = u.id
-        where p.deleted = false and p.board_id = #{0}
+        SELECT p.ID, p.BOARD_ID, p.TITLE, p.COMMENT_NUM, p.HIT, p.WRITER_ID, p.CREATED_AT, u.NICK_NAME FROM POSTS p
+        JOIN USERS u ON p.WRITER_ID = U.ID
+        WHERE p.DELETED = FALSE AND p.BOARD_ID = #{0}
+        ORDER BY p.ID DESC
+        limit #{1}, #{2}
+    </select>
+    <select id="getPostsCount" resultType="Long">
+        SELECT COUNT(ID) FROM POSTS
+        WHERE DELETED = FALSE AND BOARD_ID = #{0}
     </select>
     <select id="getPostById" resultMap="Post">
-        select p.id, p.board_id, p.title, p.content, p.writer_id, p.comment_num, p.hit, p.created_at, u.nick_name from posts p
-        join users u on p.writer_id = u.id
-        where p.deleted = false and p.id = #{0}
+        SELECT p.ID, p.BOARD_ID, p.TITLE, p.CONTENT, p.WRITER_ID, p.COMMENT_NUM, p.HIT, p.CREATED_AT, u.NICK_NAME FROM POSTS p
+        JOIN USERS u ON p.WRITER_ID = u.ID
+        WHERE p.DELETED = FALSE AND p.id = #{0}
     </select>
 
     <update id="increaseHit">
-        update posts
-        set hit = hit+1
-        where id = #{0}
+        UPDATE POSTS
+        SET HIT = HIT+1
+        WHERE ID = #{0}
     </update>
     <update id="updatePost">
-        update posts
-        set title = #{title},
-            content = #{content},
-            updated_at = now()
-        where id = #{id}
+        UPDATE POSTS
+        SET TITLE = #{title},
+            CONTENT = #{content}
+        WHERE id = #{id}
     </update>
     <update id="softDeletePost">
-        update posts
-        set deleted = true,
-            updated_at = now()
-        where id = #{id}
+        UPDATE POSTS
+        SET DELETED = TRUE
+        WHERE ID = #{id}
     </update>
 </mapper>

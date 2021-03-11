@@ -1,7 +1,5 @@
 package repository;
 
-import domain.Board;
-import domain.Club;
 import domain.Post;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +10,8 @@ public interface PostMapper {
     //insert
     void insertPost(Post post);
     //select
-    List<Post> getPosts(Long boardId);
+    Long getPostsCount(Long boardId);
+    List<Post> getPosts(Long boardId, Long offset, int size);
     Post getPostById(Long postId);
     //update
     void increaseHit(Long postId);

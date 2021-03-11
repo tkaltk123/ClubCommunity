@@ -1,7 +1,6 @@
 package repository;
 
 import domain.Comment;
-import domain.Post;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,7 +10,7 @@ public interface CommentMapper {
     //insert
     void insertComment(Comment comment);
     //select
-    List<Comment> getComments(Long postId);
+    List<Comment> getComments(Long postId, Long offset, int count);
     Comment getCommentById(Long commentId);
     //update
     void updateComment(Comment comment);

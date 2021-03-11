@@ -7,76 +7,70 @@
         <result property="owner_name" column="nick_name"/>
     </resultMap>
     <insert id="insertClub">
-        insert into clubs(owner_id,club_name,introduce)
-        values(#{owner_id},#{club_name},#{introduce})
+        INSERT INTO CLUBS(OWNER_ID,CLUB_NAME,INTRODUCE)
+        VALUES(#{owner_id},#{club_name},#{introduce})
     </insert>
     <insert id="joinClub">
-        insert into user_club(user_id, club_id)
-        values (#{0},#{1});
+        INSERT INTO USER_CLUB(USER_ID, CLUB_ID)
+        VALUES (#{0},#{1});
     </insert>
 
     <select id="getClubByName" resultType="Club">
-        select id from clubs
-        where club_name = #{name}
-          and deleted = false
+        SELECT ID FROM CLUBS
+        WHERE CLUB_NAME = #{name}
+          AND DELETED = FALSE
     </select>
     <select id="getClubs" resultMap="Club">
-        select c.id, c.owner_id, c. club_name, c.introduce, c.member_num, c.created_at, u.nick_name from clubs c
-        join users u on c.owner_id = u.id
-        where c.deleted = false
+        SELECT c.ID, c.OWNER_ID, c. CLUB_NAME, c.INTRODUCE, c.MEMBER_NUM, c.CREATED_AT, u.NICK_NAME FROM CLUBS c
+        JOIN USERS u ON c.OWNER_ID = u.ID
+        WHERE c.DELETED = FALSE
     </select>
     <select id="getClubById" resultType="Club">
-        select id, owner_id, club_name, introduce, member_num, created_at from clubs
-        where id = #{id}
-          and deleted = false
+        SELECT ID, OWNER_ID, CLUB_NAME, INTRODUCE, MEMBER_NUM, CREATED_AT FROM CLUBS
+        WHERE ID = #{id}
+          AND DELETED = FALSE
     </select>
     <select id="getJoinedStatus" resultType="Boolean">
-        select deleted from user_club
-        where user_id = #{0} and club_id = #{1}
+        SELECT DELETED FROM USER_CLUB
+        WHERE USER_ID = #{0} AND CLUB_ID = #{1}
     </select>
-    <select id="getJoinedClubs" resultType="Club">
-        select c.* from clubs c
-        join user_club uc on c.id = uc.club_id
-        where c.deleted = false
-          and uc.deleted = false
-          and uc.user_id = #{0}
+    <select id="getJoinedClubNum" resultType="Long">
+        SELECT COUNT(c.ID) FROM CLUBS c
+        JOIN USER_CLUB uc ON c.ID = uc.CLUB_ID
+        WHERE c.DELETED = FALSE
+          AND uc.DELETED = FALSE
+          AND uc.USER_ID = #{0}
     </select>
 
     <update id="increaseMember">
-        update clubs
-        set member_num = member_num+1,
-            updated_at = now()
-        where id = #{clubid}
+        UPDATE CLUBS
+        SET MEMBER_NUM = MEMBER_NUM+1
+        WHERE ID = #{clubid}
     </update>
     <update id="updateClub">
-        update clubs
-        set club_name = #{club_name},
-            introduce = #{introduce},
-            updated_at = now()
-        where id = #{id}
+        UPDATE clubs
+        SET club_name = #{club_name},
+            introduce = #{introduce}
+        WHERE id = #{id}
     </update>
     <update id="softDeleteClub">
-        update clubs
-        set deleted = true,
-            updated_at = now()
-        where id = #{id}
+        UPDATE clubs
+        SET deleted = TRUE
+        WHERE id = #{id}
     </update>
     <update id="rejoinClub">
-        update user_club
-        set deleted = false,
-            updated_at = now()
-        where user_id = #{0} and club_id = #{1}
+        UPDATE user_club
+        SET deleted = FALSE
+        WHERE user_id = #{0} AND club_id = #{1}
     </update>
     <update id="withdrawalClub">
-        update user_club
-        set deleted = true,
-            updated_at = now()
-        where user_id = #{0} and club_id = #{1}
+        UPDATE user_club
+        SET deleted = TRUE
+        WHERE user_id = #{0} AND club_id = #{1}
     </update>
     <update id="decreaseMember">
-        update clubs
-        set member_num = member_num - 1,
-            updated_at = now()
-        where id = #{clubid}
+        UPDATE clubs
+        SET member_num = member_num - 1
+        WHERE id = #{clubid}
     </update>
 </mapper>

@@ -1,8 +1,6 @@
 package controller;
 
-import domain.Club;
 import domain.Post;
-import domain.User;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +30,19 @@ public class PostController {
         return new ResponseEntity<>("create post success.", HttpStatus.OK);
     }
     @ResponseBody
+    @RequestMapping(value = "/boards/{board-id}/count", method = RequestMethod.GET)
+    @ApiOperation(value = "게시글 수 조회", notes = "선택한 게시판의 게시글 수를 반환합니다.")
+    public ResponseEntity<Long> getPostsCount(@PathVariable("board-id") Long boardId)
+    {
+        return new ResponseEntity<>(postService.getPostsCount(boardId), HttpStatus.OK);
+    }
+    @ResponseBody
     @RequestMapping(value = "/boards/{board-id}", method = RequestMethod.GET)
     @ApiOperation(value = "게시글 조회", notes = "선택한 게시판의 게시글들을 보여줍니다.")
-    public ResponseEntity<List<Post>> readPosts(@PathVariable("board-id") Long boardId)
+    public ResponseEntity<List<Post>> readPosts(@PathVariable("board-id") Long boardId,
+                                                @RequestParam(defaultValue = "1") Long page)
     {
-        return new ResponseEntity<>(postService.getPosts(boardId), HttpStatus.OK);
+        return new ResponseEntity<>(postService.getPosts(boardId, page), HttpStatus.OK);
     }
     @ResponseBody
     @RequestMapping(value = "/{post-id}", method = RequestMethod.GET)

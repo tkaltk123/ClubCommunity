@@ -4,28 +4,27 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="repository.BoardMapper">
     <insert id="insertClubBoard">
-        insert into boards(club_id, board_name)
-        values(#{id}, concat(#{club_name},' 게시판') )
+        INSERT INTO BOARDS(CLUB_ID, BOARD_NAME)
+        VALUES(#{id}, CONCAT(#{club_name},' 게시판') )
     </insert>
 
     <select id="getBoards" resultType="Board">
-        select b.id, b.club_id, b.board_name
-        from boards b
-        left join user_club uc on b.club_id = uc.club_id
-        where b.deleted = false and (
-              b.club_id is null or uc.user_id = #{0}
+        SELECT b.ID, b.CLUB_ID, b.BOARD_NAME
+        FROM BOARDS b
+        LEFT JOIN USER_CLUB uc ON b.CLUB_ID = uc.CLUB_ID
+        WHERE b.DELETED = FALSE AND (
+              b.CLUB_ID IS NULL OR uc.USER_ID = #{0}
               )
     </select>
     <select id="getBoardById" resultType="Board">
-        select id, club_id from boards
-        where id = #{0} and
-              deleted = false
+        SELECT ID, CLUB_ID FROM BOARDS
+        WHERE ID = #{0} AND
+              DELETED = FALSE
     </select>
 
     <update id="softDeleteBoard">
-        update boards
-        set deleted = true,
-            updated_at = now()
-        where club_id = #{0}
+        UPDATE BOARDS
+        SET DELETED = TRUE
+        WHERE CLUB_ID = #{0}
     </update>
 </mapper>

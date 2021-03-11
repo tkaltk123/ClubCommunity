@@ -20,7 +20,7 @@ public class PostServiceImpl implements PostService {
     BoardMapper boardMapper;
     @Autowired
     PostMapper postMapper;
-
+    static final int PAGE_SIZE = 20;
     @Override
     public void createPost(Post post) {
         post.setWriter_id(MyUtil.getUserId() );
@@ -29,18 +29,25 @@ public class PostServiceImpl implements PostService {
         //게시글 작성
         postMapper.insertPost(post);
     }
-
+    public Long getPostsCount(Long boardId){
+        return postMapper.getPostsCount(boardId);
+    }
     @Override
-    public List<Post> getPosts(Long boardId) {
+    public List<Post> getPosts(Long boardId, Long page) {
         Post post = new Post();
         post.setBoard_id(boardId);
         post.setWriter_id(MyUtil.getUserId() );
         //예외처리
         checkBoard(post);
         //게시판 조회
-        return postMapper.getPosts(boardId);
+        long offset = (page - 1) * PAGE_SIZE;
+        if(offset < 0)
+            offset = 0;
+        List<Post> result = postMapper.getPosts(boardId, offset, PAGE_SIZE);
+        if(result.size() == 0)
+            throw new RuntimeException("page out of range.");
+        return result;
     }
-
     @Override
     public Post getPost(Long postId)
     {
@@ -49,7 +56,7 @@ public class PostServiceImpl implements PostService {
         //예외처리
         checkBoard(post);
         //조회수 증가
-        if(session.getAttribute(postId.toString())==null) {
+        if(session.getAttribute(postId.toString() ) == null) {
             post.setHit(post.getHit() + 1);
             postMapper.increaseHit(postId);
             session.setAttribute(postId.toString(),true);
@@ -88,7 +95,7 @@ public class PostServiceImpl implements PostService {
     //post 를 받아 게시판이 존재하고 사용자가 접근 가능한지 확인한다.
     private void checkBoard(Post post){
         if(post == null || notExistBoard(post))
-            throw new RuntimeException("post doesn't exist.");
+            throw new RuntimeException("board doesn't exist.");
         if(notJoinedClub(post) )
             throw new RuntimeException("not joined club.");
     }

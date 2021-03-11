@@ -23,18 +23,27 @@ public class CommentServiceImpl implements CommentService {
     PostMapper postMapper;
     @Autowired
     CommentMapper commentMapper;
+    static final int PAGE_SIZE = 50;
 
     @Override
     public void createComment(Comment comment) {
-        checkPost(comment.getPost_id() );
+        Post dbPost = postMapper.getPostById(comment.getPost_id() );
+        checkPost(dbPost);
         comment.setWriter_id(MyUtil.getUserId());
         commentMapper.insertComment(comment);
     }
 
     @Override
-    public List<Comment> getComments(Long postId) {
-        checkPost(postId);
-        return commentMapper.getComments(postId);
+    public List<Comment> getComments(Long postId, Long page) {
+        Post dbPost = postMapper.getPostById(postId);
+        checkPost(dbPost);
+        long offset = (page - 1) * PAGE_SIZE;
+        if(offset < 0)
+            offset = 0;
+        List<Comment> result = commentMapper.getComments(postId, offset, PAGE_SIZE);
+        if(result.size() == 0)
+            throw new RuntimeException("page out of range.");
+        return result;
     }
 
     @Override
@@ -61,9 +70,7 @@ public class CommentServiceImpl implements CommentService {
         return status==null||status;
     }
     //post id를 받아 게시글이 존재하는지와 사용자가 게시글에 접근 가능한지를 확인한다.
-    private void checkPost(Long postId){
-        Post dbPost = postMapper.getPostById(postId);
-        //예외처리
+    private void checkPost(Post dbPost){
         if(dbPost == null || notExistBoard(dbPost) )
             throw new RuntimeException("post doesn't exist.");
         dbPost.setWriter_id(MyUtil.getUserId() );

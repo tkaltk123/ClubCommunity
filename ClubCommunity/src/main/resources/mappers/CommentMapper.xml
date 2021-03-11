@@ -7,32 +7,31 @@
         <result property="writer_name" column="nick_name"/>
     </resultMap>
     <insert id="insertComment">
-        insert into comments(post_id, content, writer_id)
-        values(#{post_id}, #{content}, #{writer_id} )
+        INSERT INTO COMMENTS(POST_ID, CONTENT, WRITER_ID)
+        VALUES(#{post_id}, #{content}, #{writer_id} )
     </insert>
 
     <select id="getComments" resultMap="Comment">
-        select c.id, c.post_id, c.content, c.created_at, u.nick_name from comments c
-        join users u on c.writer_id = u.id
-        where c.deleted = false
-          and c.post_id = #{0}
+        SELECT c.ID, c.POST_ID, c.CONTENT, c.CREATED_AT, u.NICK_NAME FROM COMMENTS c
+        JOIN users u ON c.WRITER_ID = u.ID
+        WHERE c.DELETED = FALSE
+          AND c.POST_ID = #{0}
+        LIMIT #{1}, #{2}
     </select>
     <select id="getCommentById" resultType="Comment">
-        select id, post_id, writer_id, created_at from comments
-        where deleted = false
-          and id = #{0}
+        SELECT ID, POST_ID, WRITER_ID, CREATED_AT FROM COMMENTS
+        WHERE DELETED = FALSE
+          AND ID = #{0}
     </select>
 
     <update id="updateComment">
-        update comments
-        set content = #{content},
-            updated_at = now()
-        where id = #{id}
+        UPDATE COMMENTS
+        SET CONTENT = #{content}
+        WHERE ID = #{id}
     </update>
     <update id="softDeleteComment">
-        update comments
-        set deleted = true,
-            updated_at = now()
-        where id = #{id}
+        UPDATE COMMENTS
+        SET DELETED = TRUE
+        WHERE ID = #{id}
     </update>
 </mapper>
