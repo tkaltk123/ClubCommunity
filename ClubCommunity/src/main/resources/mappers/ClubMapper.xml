@@ -16,7 +16,7 @@
     </insert>
 
     <select id="getClubByName" resultType="Club">
-        SELECT ID FROM CLUBS
+        SELECT ID, OWNER_ID FROM CLUBS
         WHERE CLUB_NAME = #{name}
           AND DELETED = FALSE
     </select>
