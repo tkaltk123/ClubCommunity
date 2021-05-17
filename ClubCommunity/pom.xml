@@ -7,7 +7,7 @@
     <groupId>org.example</groupId>
     <artifactId>ClubCommunity</artifactId>
     <version>1.0-SNAPSHOT</version>
-
+    <!--메이븐 빌드 세팅-->
     <build>
         <plugins>
             <plugin>
@@ -23,6 +23,7 @@
     </build>
 
     <dependencies>
+        <!--스프링 기본 설정-->
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
@@ -39,6 +40,25 @@
             <version>3.2.18.RELEASE</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>3.2.8.RELEASE</version>
+        </dependency>
+
+        <!--밸리데이션-->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.0.1.Final</version>
+        </dependency>
+
+        <!--aop 설정-->
+        <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>1.9.5</version>
@@ -47,6 +67,13 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>1.9.5</version>
+        </dependency>
+
+        <!--mybatis-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>3.2.18.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
@@ -59,25 +86,26 @@
             <version>1.2.0</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>3.2.18.RELEASE</version>
-        </dependency>
-        <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
         </dependency>
+
+        <!--mysql 커넥터-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.22</version>
         </dependency>
+
+        <!--제이슨 라이브러리-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.10.3</version>
         </dependency>
+
+        <!--스웨거 설정-->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -93,6 +121,8 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.6.1</version>
         </dependency>
+
+        <!--스프링 시큐리티-->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
@@ -107,16 +137,6 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
             <version>4.2.1.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>6.0.1.Final</version>
         </dependency>
     </dependencies>
 
